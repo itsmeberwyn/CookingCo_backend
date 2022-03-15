@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,17 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::resource('auth', AuthController::class);
+
+
+// NOTE: next job!
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    // insert all of the secured routes here...
+    Route::post("/post", [PostController::class, 'store'])->name('post.store');
+    Route::get("/post", [PostController::class, 'index'])->name('post.index');
+});
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class AuthController extends Controller
 {
@@ -26,7 +29,7 @@ class AuthController extends Controller
         ]);
     }
 
-
+    // login
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -57,6 +60,7 @@ class AuthController extends Controller
         return response($response, 200);
     }
 
+    // register
     public function store(Request $request)
     {
         $fields = $request->validate([
@@ -85,18 +89,26 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
+    // logout
     public function destroy(Request $request)
     {
-        if ($request->route()->parameter('auth') != $request->user()->id) {
+        try {
+
+            if ($request->route()->parameter('auth') != $request->user()->id) {
+                return [
+                    'message' => "Something went wrong with your request",
+                ];
+            }
+
+            $request->user()->tokens()->delete();
+
             return [
-                'message' => "Something went wrong with your request",
+                'message' => "Logged out",
+            ];
+        } catch (Exception $e) {
+            return [
+                'message' => "Something went wrong",
             ];
         }
-
-        $request->user()->tokens()->delete();
-
-        return [
-            'message' => "Logged out",
-        ];
     }
 }
