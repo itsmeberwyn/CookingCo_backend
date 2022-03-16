@@ -14,4 +14,9 @@ class Recipe extends Model
         'procedure',
         'ingredient',
     ];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 }

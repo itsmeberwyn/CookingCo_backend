@@ -14,4 +14,9 @@ class Post extends Model
         'caption',
         'post_image',
     ];
+
+    public function recipe()
+    {
+        return $this->hasOne(Recipe::class);
+    }
 }

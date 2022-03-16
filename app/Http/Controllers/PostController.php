@@ -86,19 +86,23 @@ class PostController extends Controller
     // NOTE: the content of this function will be moved to the profile page
     public function index(Request $request)
     {
-        $posts = Post::where('user_id', $request->user()->id)->get();
-        $postsImgURL = [];
+        $posts = Post::where('user_id', $request->user()->id)->with('recipe')->get();
+        // $postsImgURL = [];
 
         // foreach ($posts as $post) {
         // $file = Storage::get('public/posts/' . $post->post_image);
         // array_push($postsImgURL, $file);
         // }
 
-        foreach ($posts as $post) {
+        foreach ($posts as $key => $post) {
             $file = Storage::url('public/posts/' . $post->post_image);
-            array_push($postsImgURL, $file);
+
+            // array_push($postsImgURL, $file);
+
+            // $postsImgURL['image' . $key] = $post->post_image;
+            $post['post_image'] = $file;
         }
 
-        return $postsImgURL;
+        return $posts;
     }
 }
