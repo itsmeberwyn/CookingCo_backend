@@ -5,19 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Comment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'caption',
-        'tag',
-        'post_image',
+        'post_id',
+        'message',
     ];
-
-    public function recipe()
-    {
-        return $this->hasOne(Recipe::class);
-    }
 }

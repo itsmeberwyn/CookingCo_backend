@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,13 +27,30 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::resource('auth', AuthController::class);
+// Route::get("/test", [AuthController::class, 'test'])->name('test');
 
 
 // NOTE: next job!
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // insert all of the secured routes here...
+    // post
     Route::post("/post", [PostController::class, 'store'])->name('post.store');
     Route::get("/post", [PostController::class, 'index'])->name('post.index');
+
+    // comment
+    Route::patch("/comment/{id}", [CommentController::class, 'update'])->name('comment.update');
+    Route::get("/comment", [CommentController::class, 'index'])->name('comment.index');
+    Route::post("/comment", [CommentController::class, 'store'])->name('comment.store');
+
+    // rate
+    Route::get("/rate", [RatingController::class, 'index'])->name('rate.index');
+    Route::post("/rate", [RatingController::class, 'store'])->name('rate.store');
+
+
+    Route::get("/profile", [ProfileController::class, 'index'])->name('profile.index');
+
+    Route::get("/feed", [FeedController::class, 'index'])->name('feed.index');
+    Route::get("/search", [FeedController::class, 'search'])->name('feed.search');
 });
 
 

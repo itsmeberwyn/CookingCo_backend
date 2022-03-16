@@ -6,6 +6,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -14,11 +15,11 @@ class AuthController extends Controller
 {
 
     // getting user using token
-    // public function index(Request $request)
-    // {
-    //     return $request->bearerToken();
-    //     return Auth::user();
-    // }
+    public function test(Request $request)
+    {
+        return $request->bearerToken();
+        return Auth::user();
+    }
 
     public function __construct()
     {

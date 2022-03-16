@@ -17,8 +17,8 @@ class CreateRecipesTable extends Migration
             $table->id();
             $table->bigInteger('post_id')->unsigned();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->string('procedure');
-            $table->string('ingredient');
+            $table->json('procedure')->nullable();
+            $table->json('ingredient')->nullable();
             $table->timestamps();
         });
     }

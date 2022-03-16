@@ -12,36 +12,23 @@ class PostController extends Controller
 {
     public function store(Request $request)
     {
-        // if ($request->recipe) {
-        //     dd('true');
-        // }
-        // dd(json_decode($request->recipe, true));
         DB::beginTransaction();
         try {
-
-            // $post = new Post;
 
             if ($request->hasFile('post_image')) {
                 $completeFileName = $request->file('post_image')->getClientOriginalName();
                 $filenameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
                 $fileExtensionOnly = $request->file('post_image')->getClientOriginalExtension();
 
-                // $compPic = str_replace(' ', '_', $filenameOnly) . '-' . rand() . '_' . time() . '.' . $fileExtensionOnly;
                 $compPic = str_replace(' ', '_', $filenameOnly) . '_' . time() . '.' . $fileExtensionOnly;
-                // $compPic = now()->timestamp . '_' . str_replace(' ', '_', $filenameOnly);
-
-                // dd($completeFileName, $filenameOnly, $fileExtensionOnly, $compPic);
 
                 $path = $request->file('post_image')->storeAs('public/posts', $compPic);
 
-                // using eloquent
-                // $post->user_id = $request->user()->id;
-                // $post->caption = $request->caption;
-                // $post->post_image = $compPic;
 
                 $post_id = DB::table('posts')->insertGetId(array(
                     'user_id' => $request->user()->id,
                     'caption' => $request->caption,
+                    'tag' => $request->tag,
                     'post_image' => $compPic,
                     "created_at" =>  \Carbon\Carbon::now(),
                     "updated_at" => \Carbon\Carbon::now(),
@@ -60,23 +47,6 @@ class PostController extends Controller
             }
             DB::commit();
             return ['status' => 'success', 'message' => 'Post saved successfully'];
-
-
-            // using eloquent
-            // if ($post->save()) {
-            //     if ($request->recipe) {
-            //         $recipe = new Recipe;
-            //         $data = json_decode($request->recipe, true);
-            //         // dd(json_encode($data['procedures']));
-            //         // $post->id;
-            //         $recipe->post_id = $post->id;
-            //         $recipe->ingredient = json_encode($data['ingredients']);
-            //         $recipe->procedure = json_encode($data['procedures']);
-            //         return ['status' => 'success', 'message' => 'Post saved successfully'];
-            //     }
-            // } else {
-            //     return ['status' => 'Failed', 'message' => 'Something went wrong'];
-            // }
         } catch (\Exception $e) {
             return ['status' => 'Failed', 'message' => 'Something went wrong'];
             DB::rollback();
@@ -86,20 +56,13 @@ class PostController extends Controller
     // NOTE: the content of this function will be moved to the profile page
     public function index(Request $request)
     {
-        $posts = Post::where('user_id', $request->user()->id)->with('recipe')->get();
-        // $postsImgURL = [];
-
-        // foreach ($posts as $post) {
-        // $file = Storage::get('public/posts/' . $post->post_image);
-        // array_push($postsImgURL, $file);
-        // }
+        // paghiwalayin mo nalang sa frontend ung post lang at ung post na may recipe
+        // user json parse to parse the array object string
+        $posts = Post::where('user_id', $request->user()->id)->with('recipe')->skip($request->skip)->take(3)->orderBy('created_at', 'desc')->get();
 
         foreach ($posts as $key => $post) {
             $file = Storage::url('public/posts/' . $post->post_image);
 
-            // array_push($postsImgURL, $file);
-
-            // $postsImgURL['image' . $key] = $post->post_image;
             $post['post_image'] = $file;
         }
 
