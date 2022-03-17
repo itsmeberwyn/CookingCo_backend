@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -50,7 +51,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        $token = $user->createToken('cookingcousertoken')->plainTextToken;
 
 
         $response = [
@@ -111,5 +112,65 @@ class AuthController extends Controller
                 'message' => "Something went wrong",
             ];
         }
+    }
+
+    // NOTE: handling Google and Facebook Auth
+
+    // google login
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // google callback
+    public function handleGoogleCallback()
+    {
+        try {
+            $user = Socialite::driver('google')->user();
+            // dd($user->user);
+            $this->registerOrLoginUser($user, 'google');
+        } catch (Exception $e) {
+            dd('error, try again, throw to frontend and redirect to login');
+        }
+    }
+
+    // facebook login
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    // facebook callback
+    public function handleFacebookCallback()
+    {
+        $user = Socialite::driver('facebook')->user();
+        // dd(explode(' ', $user->user['name'])[0]);
+        $this->registerOrLoginUser($user, 'facebook');
+    }
+
+    public function registerOrLoginUser($data, $type)
+    {
+        $user = User::where('email',  $data->email)->first();
+        if (!$user) {
+            $user = new User;
+            $user->firstname = $type == 'facebook' ? explode(' ', $data->user['name'])[0] : $data->user['given_name'];
+            $user->lastname = $type == 'facebook' ? explode(' ', $data->user['name'])[1] : $data->user['family_name'];
+            $user->username = $data->name;
+            $user->email = $data->email;
+            $user->provider_id = $data->id;
+            $user->profile_image = $data->avatar;
+            $user->save();
+        }
+
+        Auth::login($user);
+
+        $token = $user->createToken('cookingcousertoken')->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token,
+        ];
+        dd($response);
+        return response($response, 201);
     }
 }

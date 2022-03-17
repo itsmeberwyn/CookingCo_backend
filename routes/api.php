@@ -28,8 +28,9 @@ use Illuminate\Support\Facades\Route;
 // Route::post('/login', [AuthController::class, 'index'])->name('login.index');
 
 
+
 Route::resource('auth', AuthController::class);
-// Route::get("/test", [AuthController::class, 'test'])->name('test');
+Route::get("/test", [AuthController::class, 'test'])->name('test');
 
 
 // NOTE: next job!
