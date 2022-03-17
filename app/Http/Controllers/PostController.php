@@ -68,4 +68,11 @@ class PostController extends Controller
 
         return $posts;
     }
+
+    public function show(Request $request)
+    {
+        $posts = Post::where('id', $request->route()->parameter('post_id'))->with('recipe')->get();
+
+        return $posts;
+    }
 }

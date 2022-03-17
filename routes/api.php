@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
@@ -35,6 +37,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // insert all of the secured routes here...
     // post
     Route::post("/post", [PostController::class, 'store'])->name('post.store');
+    Route::get("/post/{post_id}", [PostController::class, 'show'])->name('post.show');
     Route::get("/post", [PostController::class, 'index'])->name('post.index');
 
     // comment
@@ -46,11 +49,25 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("/rate", [RatingController::class, 'index'])->name('rate.index');
     Route::post("/rate", [RatingController::class, 'store'])->name('rate.store');
 
-
+    // profile 
     Route::get("/profile", [ProfileController::class, 'index'])->name('profile.index');
 
+    // feeds
     Route::get("/feed", [FeedController::class, 'index'])->name('feed.index');
+
+    // search
     Route::get("/search", [FeedController::class, 'search'])->name('feed.search');
+
+    // follow
+    Route::get("/followers", [FollowController::class, 'getFollowers'])->name('followers');
+    Route::get("/followings", [FollowController::class, 'getFollowings'])->name('followings');
+    Route::post("/follow", [FollowController::class, 'follow'])->name('follow');
+    Route::delete("/unfollow/{following_id}", [FollowController::class, 'unfollow'])->name('unfollow');
+
+    // bookmark
+    Route::delete("/bookmark/{post_id}", [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
+    Route::post("/bookmark", [BookmarkController::class, 'store'])->name('bookmark.store');
+    Route::get("/bookmark", [BookmarkController::class, 'index'])->name('bookmark.index');
 });
 
 
