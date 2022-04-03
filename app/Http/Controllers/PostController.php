@@ -15,35 +15,28 @@ class PostController extends Controller
         DB::beginTransaction();
         try {
 
-            if ($request->hasFile('post_image')) {
-                $completeFileName = $request->file('post_image')->getClientOriginalName();
-                $filenameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
-                $fileExtensionOnly = $request->file('post_image')->getClientOriginalExtension();
-
-                $compPic = str_replace(' ', '_', $filenameOnly) . '_' . time() . '.' . $fileExtensionOnly;
-
-                $path = $request->file('post_image')->storeAs('public/posts', $compPic);
+            $image = $request->post_image['base64String']; // image base64 encoded
+            $compPic =  '_image' . time() . '.' . $request->post_image['format'];
+            Storage::disk('public')->put($compPic, base64_decode($image));
 
 
-                $post_id = DB::table('posts')->insertGetId(array(
-                    'user_id' => $request->user()->id,
-                    'caption' => $request->caption,
-                    'tag' => $request->tag,
-                    'post_image' => $compPic,
+            $post_id = DB::table('posts')->insertGetId(array(
+                'user_id' => $request->user()->id,
+                'caption' => $request->caption,
+                'tag' => json_encode($request->tag),
+                'post_image' => $compPic,
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now(),
+            ));
+
+            if ($request->recipe) {
+                DB::table('recipes')->insertGetId(array(
+                    'post_id' => $post_id,
+                    'ingredient' => json_encode($request->recipe['ingredients']),
+                    'procedure' => json_encode($request->recipe['procedures']),
                     "created_at" =>  \Carbon\Carbon::now(),
                     "updated_at" => \Carbon\Carbon::now(),
                 ));
-
-                if ($request->recipe) {
-                    $data = json_decode($request->recipe, true);
-                    DB::table('recipes')->insertGetId(array(
-                        'post_id' => $post_id,
-                        'ingredient' => json_encode($data['ingredients']),
-                        'procedure' => json_encode($data['procedures']),
-                        "created_at" =>  \Carbon\Carbon::now(),
-                        "updated_at" => \Carbon\Carbon::now(),
-                    ));
-                }
             }
             DB::commit();
             return ['status' => 'success', 'message' => 'Post saved successfully'];
