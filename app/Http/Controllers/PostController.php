@@ -12,6 +12,7 @@ class PostController extends Controller
 {
     public function store(Request $request)
     {
+
         DB::beginTransaction();
         try {
 
@@ -29,7 +30,7 @@ class PostController extends Controller
                 "updated_at" => \Carbon\Carbon::now(),
             ));
 
-            if ($request->recipe) {
+            if ($request->recipe['ingredients'] || $request->recipe['procedures']) {
                 DB::table('recipes')->insertGetId(array(
                     'post_id' => $post_id,
                     'ingredient' => json_encode($request->recipe['ingredients']),
@@ -46,12 +47,26 @@ class PostController extends Controller
         }
     }
 
-    // NOTE: the content of this function will be moved to the profile page
+    // NOTE: work here!! create another method for fetching the recipe data
     public function index(Request $request)
     {
         // paghiwalayin mo nalang sa frontend ung post lang at ung post na may recipe
         // user json parse to parse the array object string
-        $posts = Post::where('user_id', $request->user()->id)->with('recipe')->skip($request->skip)->take(3)->orderBy('created_at', 'desc')->get();
+        $posts = Post::where('user_id', $request->user()->id)->with('recipe')->skip($request->skip)->take(6)->orderBy('created_at', 'desc')->get();
+
+        foreach ($posts as $key => $post) {
+            $file = Storage::url('public/posts/' . $post->post_image);
+
+            $post['post_image'] = $file;
+        }
+
+        return $posts;
+    }
+
+    public function getDataRecipe(Request $request)
+    {
+        // $posts = Post::where('user_id', $request->user()->id)->with('recipe')->skip($request->skip)->take(6)->orderBy('created_at', 'desc')->get();
+        $posts = Post::join('recipes', 'recipes.post_id', '=', 'posts.id')->get();
 
         foreach ($posts as $key => $post) {
             $file = Storage::url('public/posts/' . $post->post_image);
