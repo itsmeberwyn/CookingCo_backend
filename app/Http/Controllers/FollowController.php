@@ -41,8 +41,10 @@ class FollowController extends Controller
         }
     }
 
-    public function unfollow(Request $request)
+    public function unfollow(Request $request, $following_id)
     {
+
+
         DB::beginTransaction();
         try {
             $doesfollow = Follow::where('follower_id', $request->following_id)->where('following_id', $request->user()->id)->get();
@@ -70,13 +72,29 @@ class FollowController extends Controller
     }
 
 
-    public function getFollowers(Request $request)
+    public function getFollowers(Request $request, $user_id = null)
     {
-        return Follow::where('following_id', $request->user()->id)->get();
+        return Follow::where('following_id', $user_id ? $user_id : $request->user()->id)->get();
     }
 
-    public function getFollowings(Request $request)
+    public function getFollowings(Request $request, $user_id = null)
     {
-        return Follow::where('follower_id', $request->user()->id)->get();
+        return Follow::where('follower_id', $user_id ? $user_id : $request->user()->id)->get();
+    }
+
+    public function countFollows(Request $request, $user_id = null)
+    {
+        $countFollowers = Follow::where('following_id', $user_id ? $user_id : $request->user()->id)->count();
+        $countFollowings = Follow::where('follower_id', $user_id ? $user_id : $request->user()->id)->count();
+
+        return ['followerscount' => $countFollowers, "followingscount" => $countFollowings];
+    }
+
+    public function isfollow(Request $request, $user_id)
+    {
+        $isfollowing = Follow::where('follower_id', $request->user()->id)->where('following_id', $user_id)->get();
+        // $isfollower = Follow::where('follower_id', $user_id)->where('following_id', $request->user()->id)->count();
+
+        return ['isfollowing' => $isfollowing];
     }
 }

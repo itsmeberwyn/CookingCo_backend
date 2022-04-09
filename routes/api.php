@@ -39,8 +39,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // post
     Route::post("/post", [PostController::class, 'store'])->name('post.store');
     Route::get("/post/{post_id}", [PostController::class, 'show'])->name('post.show');
-    Route::get("/post", [PostController::class, 'index'])->name('post.index');
-    Route::get("/recipe", [PostController::class, 'getDataRecipe'])->name('post.recipe');
+    Route::get("/profile/{user_id?}", [PostController::class, 'index'])->name('post.index');
+    Route::get("/recipe/{user_id?}", [PostController::class, 'getDataRecipe'])->name('post.recipe');
 
     // comment
     Route::patch("/comment/{id}", [CommentController::class, 'update'])->name('comment.update');
@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post("/rate", [RatingController::class, 'store'])->name('rate.store');
 
     // profile 
-    Route::get("/profile", [ProfileController::class, 'index'])->name('profile.index');
+    Route::get("/info", [ProfileController::class, 'index'])->name('profile.index');
 
     // feeds
     Route::get("/feed", [FeedController::class, 'index'])->name('feed.index');
@@ -61,8 +61,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("/search", [FeedController::class, 'search'])->name('feed.search');
 
     // follow
-    Route::get("/followers", [FollowController::class, 'getFollowers'])->name('followers');
-    Route::get("/followings", [FollowController::class, 'getFollowings'])->name('followings');
+    Route::get("/countfollows/{user_id?}", [FollowController::class, 'countFollows']);
+    Route::get("/followers/{user_id?}", [FollowController::class, 'getFollowers'])->name('followers');
+    Route::get("/followings/{user_id?}", [FollowController::class, 'getFollowings'])->name('followings');
+    Route::get("/isfollow/{user_id}", [FollowController::class, 'isfollow']);
+
     Route::post("/follow", [FollowController::class, 'follow'])->name('follow');
     Route::delete("/unfollow/{following_id}", [FollowController::class, 'unfollow'])->name('unfollow');
 
