@@ -89,9 +89,12 @@ class PostController extends Controller
         // return $posts;
     }
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $posts = Post::where('id', $request->route()->parameter('post_id'))->with('recipe')->get();
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->where('posts.id', $request->route()->parameter('post_id'))->get();
+        $file = Storage::url('public/posts/' . $posts[0]['post_image']);
+
+        $posts[0]['post_image'] = $file;
 
         return $posts;
     }
