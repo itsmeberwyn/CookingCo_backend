@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // rate
     Route::get("/rate", [RatingController::class, 'index'])->name('rate.index');
+    Route::get("/userratepost", [RatingController::class, 'userRatePost']);
     Route::post("/rate", [RatingController::class, 'store'])->name('rate.store');
 
     // profile 

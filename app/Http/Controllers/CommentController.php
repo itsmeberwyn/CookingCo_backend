@@ -14,7 +14,7 @@ class CommentController extends Controller
         // $comments = Comment::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->where('posts.id', $request->route()->parameter('post_id'))->get();
 
         // return $request->post_id;
-        $comments = Comment::join('users', 'users.id', '=', 'comments.user_id')->select('comments.*', 'users.firstname', 'users.lastname', 'users.profile_image', 'users.username')->where('comments.post_id', $request->get('post_id'))->skip($request->skip)->take(6)->orderBy('created_at', 'desc')->get();
+        $comments = Comment::join('users', 'users.id', '=', 'comments.user_id')->select('comments.*', 'users.firstname', 'users.lastname', 'users.profile_image', 'users.username')->where('comments.post_id', $request->get('post_id'))->skip($request->get('skip'))->take(6)->orderBy('created_at', 'desc')->get();
         return $comments;
     }
 
