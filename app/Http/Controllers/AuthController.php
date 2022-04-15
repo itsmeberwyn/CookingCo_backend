@@ -32,7 +32,7 @@ class AuthController extends Controller
     }
 
     // login
-    public function index(Request $request)
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email'],
@@ -46,9 +46,10 @@ class AuthController extends Controller
         $user = User::where('email',  $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => "Bad credentials"
-            ], 401);
+            return [
+                'message' => "Bad credentials",
+                'status' => 401
+            ];
         }
 
         $token = $user->createToken('cookingcousertoken')->plainTextToken;
@@ -57,15 +58,24 @@ class AuthController extends Controller
         $response = [
             'user' => $user,
             'token' => $token,
+            'status' => 200
         ];
 
-        return response($response, 200);
+        return $response;
     }
 
     // register
-    public function store(Request $request)
+    public function register(Request $request)
     {
-        $fields = $request->validate([
+        // $fields = $request->validate([
+        //     'firstname' => ['required', 'string'],
+        //     'lastname' => ['required', 'string'],
+        //     'username' => ['required', 'string'],
+        //     'email' => ['required', 'string', 'unique:users', 'email'],
+        //     'password' => ['required', 'string', 'confirmed']
+        // ]);
+
+        $fields = Validator::make($request->all(), [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
             'username' => ['required', 'string'],
@@ -73,12 +83,19 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'confirmed']
         ]);
 
+        if ($fields->fails()) {
+            return [
+                'error' => 'Bad credentials',
+                'status' => 401
+            ];
+        }
+
         $user = User::create([
-            'firstname' => $fields['firstname'],
-            'lastname' => $fields['lastname'],
-            'username' => $fields['username'],
-            'email' => $fields['email'],
-            'password' => Hash::make($fields['password']),
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
         $token = $user->createToken('cookingcousertoken')->plainTextToken;
@@ -86,9 +103,10 @@ class AuthController extends Controller
         $response = [
             'user' => $user,
             'token' => $token,
+            'status' => 200
         ];
 
-        return response($response, 201);
+        return $response;
     }
 
     // logout
@@ -130,7 +148,8 @@ class AuthController extends Controller
             // dd($user->user);
             $this->registerOrLoginUser($user, 'google');
         } catch (Exception $e) {
-            dd('error, try again, throw to frontend and redirect to login');
+            dd($e);
+            // dd('error, try again, throw to frontend and redirect to login');
         }
     }
 
@@ -170,7 +189,7 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ];
-        dd($response);
+        // dd($response);
         return response($response, 201);
     }
 }
