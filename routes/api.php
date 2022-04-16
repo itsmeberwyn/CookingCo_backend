@@ -73,7 +73,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete("/unfollow/{following_id}", [FollowController::class, 'unfollow'])->name('unfollow');
 
     // bookmark
-    Route::delete("/bookmark/{post_id}", [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
+    Route::get("/checkuserbookmark/{post_id}", [BookmarkController::class, 'checkUserBookmark']);
+    Route::post("/removebookmark", [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
     Route::post("/bookmark", [BookmarkController::class, 'store'])->name('bookmark.store');
     Route::get("/bookmark", [BookmarkController::class, 'index'])->name('bookmark.index');
 });
