@@ -6,12 +6,19 @@ use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class FeedController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::with('recipe')->skip($request->skip)->take(3)->inRandomOrder()->get();
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->with('recipe')->skip($request->get('skip'))->take(6)->inRandomOrder()->get();
+
+        foreach ($posts as $key => $post) {
+            $file = Storage::url('public/posts/' . $post->post_image);
+
+            $post['post_image'] = $file;
+        }
 
         return $posts;
     }
