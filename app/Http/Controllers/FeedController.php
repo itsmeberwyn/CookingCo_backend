@@ -29,7 +29,7 @@ class FeedController extends Controller
         //     $query->where('tag', 'like', 'meryenda' . '%');
         // })->get();
 
-        $search = $request->tag;
+        $search = $request->get('tag');
         // dd($search);
         // $posts = Post::query()->whereJsonContains('tag', "%$search%")->orWhereJsonContains('caption', "%$search%")->get();
         // $posts = Post::whereRaw('JSON_CONTAINS(tag->tag, "meryenda")')->get();
@@ -37,9 +37,16 @@ class FeedController extends Controller
 
         // NOTE: working
         $posts = Post::query()
-            ->whereJsonContains('tag', $search)
+            ->whereJsonContains('tag', $search)->join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname')
             ->get();
-        return $posts;
+
+        foreach ($posts as $key => $post) {
+            $file = Storage::url('public/posts/' . $post->post_image);
+
+            $post['post_image'] = $file;
+        }
+
+        return ['data' => $posts];
     }
 
     public function popularPost(Request $request)
@@ -65,5 +72,23 @@ class FeedController extends Controller
         }
 
         return $posts;
+    }
+
+    public function getRandomRecipe(Request $request)
+    {
+        // $posts = Post::where('user_id', $request->user()->id)->with('recipe')->skip($request->skip)->take(6)->orderBy('created_at', 'desc')->get();
+        $posts = Post::join('recipes', 'recipes.post_id', '=', 'posts.id')->join('users', 'users.id', '=', 'posts.user_id')->select('recipes.*', 'posts.*', 'users.firstname', 'users.lastname')->inRandomOrder()->take(5)->get();
+
+        foreach ($posts as $key => $post) {
+            $file = Storage::url('public/posts/' . $post->post_image);
+
+            $post['post_image'] = $file;
+        }
+
+
+        return ["data" => $posts];
+
+
+        // return $posts;
     }
 }
