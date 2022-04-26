@@ -52,4 +52,14 @@ class CommentController extends Controller
             return response()->json(['status' => 'Failed', 'message' => 'Something went wrong']);
         }
     }
+
+    public function remove(Request $request)
+    {
+        try {
+            Comment::where('id', $request->route()->parameter('id'))->where('user_id', $request->user()->id)->delete();
+            return response()->json(['status' => 'success', 'message' => 'Deleted successfully']);
+        } catch (QueryException $e) {
+            return response()->json(['status' => 'Failed', 'message' => 'Something went wrong']);
+        }
+    }
 }
