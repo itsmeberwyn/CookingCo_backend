@@ -134,50 +134,18 @@ class AuthController extends Controller
 
     // NOTE: handling Google and Facebook Auth
 
-    // google login
-    public function redirectToGoogle()
+    public function registerOrLoginUser(Request $request)
     {
-        return Socialite::driver('google')->redirect();
-    }
-
-    // google callback
-    public function handleGoogleCallback()
-    {
-        try {
-            $user = Socialite::driver('google')->user();
-            // dd($user->user);
-            $this->registerOrLoginUser($user, 'google');
-        } catch (Exception $e) {
-            dd($e);
-            // dd('error, try again, throw to frontend and redirect to login');
-        }
-    }
-
-    // facebook login
-    public function redirectToFacebook()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    // facebook callback
-    public function handleFacebookCallback()
-    {
-        $user = Socialite::driver('facebook')->user();
-        // dd(explode(' ', $user->user['name'])[0]);
-        $this->registerOrLoginUser($user, 'facebook');
-    }
-
-    public function registerOrLoginUser($data, $type)
-    {
-        $user = User::where('email',  $data->email)->first();
+        // return ['data' => $request->all()];
+        $user = User::where('email',  $request->email)->first();
         if (!$user) {
             $user = new User;
-            $user->firstname = $type == 'facebook' ? explode(' ', $data->user['name'])[0] : $data->user['given_name'];
-            $user->lastname = $type == 'facebook' ? explode(' ', $data->user['name'])[1] : $data->user['family_name'];
-            $user->username = $data->name;
-            $user->email = $data->email;
-            $user->provider_id = $data->id;
-            $user->profile_image = $data->avatar;
+            $user->firstname = $request->firstname;
+            $user->lastname = $request->lastname;
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->provider_id = $request->provider_id;
+            $user->profile_image = $request->profile_image;
             $user->save();
         }
 
@@ -188,8 +156,9 @@ class AuthController extends Controller
         $response = [
             'user' => $user,
             'token' => $token,
+            'status' => 200
         ];
         // dd($response);
-        return response($response, 201);
+        return ['data' => $response];
     }
 }

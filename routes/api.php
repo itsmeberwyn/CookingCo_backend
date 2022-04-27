@@ -34,6 +34,7 @@ Route::get("/test", [AuthController::class, 'test'])->name('test');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/loginsocial', [AuthController::class, 'registerOrLoginUser'])->name('socialauth');
 
 // NOTE: next job!
 Route::group(['middleware' => ['auth:sanctum']], function () {

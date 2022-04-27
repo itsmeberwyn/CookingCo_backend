@@ -14,13 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-    Route::get("/login/google", [AuthController::class, 'redirectToGoogle'])->name('login.google');
-    Route::get("/login/google/callback", [AuthController::class, 'handleGoogleCallback']);
-
-    Route::get("/login/facebook", [AuthController::class, 'redirectToFacebook'])->name('login.facebook');
-    Route::get("/login/facebook/callback", [AuthController::class, 'handleFacebookCallback']);
-});
 
 Route::get('/', function () {
     return view('welcome');
