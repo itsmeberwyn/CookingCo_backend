@@ -13,7 +13,6 @@ class PostController extends Controller
 {
     public function store(Request $request)
     {
-
         DB::beginTransaction();
         try {
 
@@ -24,6 +23,7 @@ class PostController extends Controller
 
             $post_id = DB::table('posts')->insertGetId(array(
                 'user_id' => $request->user()->id,
+                'title' => $request->title,
                 'caption' => $request->caption,
                 'tag' => json_encode($request->tag),
                 'post_image' => $compPic,
@@ -34,6 +34,9 @@ class PostController extends Controller
             if ($request->recipe['ingredients'] || $request->recipe['procedures']) {
                 DB::table('recipes')->insertGetId(array(
                     'post_id' => $post_id,
+                    'duration' => $request->duration,
+                    'calories' => $request->calories,
+                    'servings' => $request->servings,
                     'ingredient' => json_encode($request->recipe['ingredients']),
                     'procedure' => json_encode($request->recipe['procedures']),
                     "created_at" =>  \Carbon\Carbon::now(),

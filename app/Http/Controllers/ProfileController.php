@@ -18,10 +18,10 @@ class ProfileController extends Controller
     {
         $user = User::find(auth()->user()->id);
 
-        $user->email;
-        $user->firstname;
-        $user->lastname;
-        $user->username;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->username =  $request->username;
+        $user->bio =  $request->bio;
 
         if (sizeof($request->profile_image) == 2) {
             $image = $request->profile_image['base64String']; // image base64 encoded
@@ -36,9 +36,9 @@ class ProfileController extends Controller
         }
 
         if ($user->save()) {
-            return ['status' => 'success', 'message' => 'Profile updated successfully'];
+            return ['data' => $user, 'status' => 'success', 'message' => 'Profile updated successfully'];
         } else {
-            return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            return ['status' => 'failed', 'message' => 'Something went wrong'];
         }
     }
 }
