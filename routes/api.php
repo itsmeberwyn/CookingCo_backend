@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // profile 
     Route::get("/info", [ProfileController::class, 'index'])->name('profile.index');
+    Route::post("/updateprofile", [ProfileController::class, 'patch'])->name('profile.patch');
 
     // feeds
     Route::get("/feed", [FeedController::class, 'index'])->name('feed.index');
