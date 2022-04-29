@@ -101,4 +101,41 @@ class PostController extends Controller
 
         return $posts;
     }
+
+    public function patch(Request $request)
+    {
+        // return ['data' => $request->all()];
+        DB::beginTransaction();
+        try {
+
+            DB::table('posts')->where(
+                'id',
+                $request->id
+            )->update(array(
+                'title' => $request->title,
+                'caption' => $request->caption,
+                'tag' => json_encode($request->tag),
+                "updated_at" => \Carbon\Carbon::now(),
+            ));
+
+            if ($request->recipe['ingredients'] || $request->recipe['procedures']) {
+                DB::table('recipes')->where(
+                    'post_id',
+                    $request->id
+                )->update(array(
+                    'duration' => $request->duration,
+                    'calories' => $request->calories,
+                    'servings' => $request->servings,
+                    'ingredient' => json_encode($request->recipe['ingredients']),
+                    'procedure' => json_encode($request->recipe['procedures']),
+                    "updated_at" => \Carbon\Carbon::now(),
+                ));
+            }
+            DB::commit();
+            return ['data' => $request->all(), 'status' => 'success', 'message' => 'Post saved successfully'];
+        } catch (\Exception $e) {
+            return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            DB::rollback();
+        }
+    }
 }

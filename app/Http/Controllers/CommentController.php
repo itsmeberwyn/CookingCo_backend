@@ -23,6 +23,10 @@ class CommentController extends Controller
         // dd($request->user()->id, $request->post_id, $request->message);
         $comment = new Comment;
 
+        if ($request->comment_id) {
+            $comment = Comment::find($request->comment_id);
+        }
+
         $this->validate($request, [
             'post_id' => ['required'],
             'message' => ['required', 'max:255'],

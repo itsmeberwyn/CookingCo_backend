@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("/post/{post_id}", [PostController::class, 'show'])->name('post.show');
     Route::get("/profile/{user_id?}", [PostController::class, 'index'])->name('post.index');
     Route::get("/recipe/{user_id?}", [PostController::class, 'getDataRecipe'])->name('post.recipe');
+    Route::post("/updatepost", [PostController::class, 'patch'])->name('post.patch');
 
     // comment
     Route::patch("/comment/{id}", [CommentController::class, 'update'])->name('comment.update');
