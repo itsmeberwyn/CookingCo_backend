@@ -26,7 +26,7 @@ class ProfileController extends Controller
         if (sizeof($request->profile_image) == 2) {
             $image = $request->profile_image['base64String']; // image base64 encoded
             $compPic =  '_image' . time() . '.' . $request->profile_image['format'];
-            Storage::disk('public')->put($compPic, base64_decode($image));
+            Storage::disk('public')->put('profiles/' . $compPic, base64_decode($image));
 
             $user->profile_image = $compPic;
         }

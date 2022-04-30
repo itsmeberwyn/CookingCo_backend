@@ -94,6 +94,7 @@ class AuthController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'username' => $request->username,
+            'profile_image' => 'default-img.webp',
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
