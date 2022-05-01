@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,8 +18,10 @@ class FeedController extends Controller
 
         foreach ($posts as $key => $post) {
             $file = Storage::url('public/posts/' . $post->post_image);
+            $time = Carbon::createFromTimeStamp(strtotime($post['created_at']))->diffForHumans();
 
             $post['post_image'] = $file;
+            $post['time'] = $time;
         }
 
         return $posts;
@@ -35,9 +39,20 @@ class FeedController extends Controller
         // $posts = Post::whereRaw('JSON_CONTAINS(tag->tag, "meryenda")')->get();
         // $posts = Post::whereRaw("JSON_CONTAINS(JSON_EXTRACT(tag, '$.tags'), '\"meryenda\"')")->get();
 
-        // NOTE: working
+        // NOTE: working via tags
         $posts = Post::query()
             ->whereJsonContains('tag', $search)->join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname')
+            ->get();
+
+        $postsTitleCaption = Post::query()
+            ->where('title', 'LIKE', "%{$search}%")
+            ->orWhere('caption', 'LIKE', "%{$search}%")->join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname')
+            ->get();
+
+        $users = User::query()
+            ->where('firstname', 'LIKE', "%{$search}%")
+            ->orWhere('lastname', 'LIKE', "%{$search}%")
+            ->orWhere('username', 'LIKE', "%{$search}%")->select('users.firstname', 'users.lastname', 'users.username', 'users.profile_image', 'users.id', 'users.provider_id')
             ->get();
 
         foreach ($posts as $key => $post) {
@@ -46,7 +61,13 @@ class FeedController extends Controller
             $post['post_image'] = $file;
         }
 
-        return ['data' => $posts];
+        foreach ($postsTitleCaption as $key => $post) {
+            $file = Storage::url('public/posts/' . $post->post_image);
+
+            $post['post_image'] = $file;
+        }
+
+        return ['tags' => $posts, 'titlecaption' => $postsTitleCaption, 'users' => $users];
     }
 
     public function popularPost(Request $request)

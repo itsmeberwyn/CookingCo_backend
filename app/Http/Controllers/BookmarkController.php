@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bookmark;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class BookmarkController extends Controller
 {
@@ -16,6 +18,8 @@ class BookmarkController extends Controller
             ->join('posts', 'posts.id', '=', 'bookmarks.post_id')
             ->leftJoin('recipes', 'posts.id', '=', 'recipes.post_id')
             ->select('bookmarks.*', 'posts.caption', 'posts.post_image', 'recipes.id AS recipe')->where('bookmarks.user_id', $request->user()->id)->skip(0)->take(3)->orderBy('created_at', 'desc')->get();
+
+
         return $bookmarks;
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,7 +33,7 @@ class ProfileController extends Controller
         }
 
         if ($user->provider_id !== null || $user->provider_id !== '') {
-            $user->password = $request->password;
+            $user->password = Hash::make($request->password);
         }
 
         if ($user->save()) {

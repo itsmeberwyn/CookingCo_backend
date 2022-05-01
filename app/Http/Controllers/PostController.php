@@ -44,7 +44,7 @@ class PostController extends Controller
                 ));
             }
             DB::commit();
-            return ['status' => 'success', 'message' => 'Post saved successfully'];
+            return ['status' => 'success', 'message' => 'Post saved successfully', 'postId' => $post_id];
         } catch (\Exception $e) {
             return ['status' => 'Failed', 'message' => 'Something went wrong'];
             DB::rollback();
@@ -94,7 +94,7 @@ class PostController extends Controller
 
     public function show(Request $request, $id)
     {
-        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->with('recipe')->where('posts.id', $request->route()->parameter('post_id'))->get();
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image', 'users.provider_id')->with('recipe')->where('posts.id', $request->route()->parameter('post_id'))->get();
         $file = Storage::url('public/posts/' . $posts[0]['post_image']);
 
         $posts[0]['post_image'] = $file;
