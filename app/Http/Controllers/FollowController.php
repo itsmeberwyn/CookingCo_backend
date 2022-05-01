@@ -74,12 +74,12 @@ class FollowController extends Controller
 
     public function getFollowers(Request $request, $user_id = null)
     {
-        return Follow::where('following_id', $user_id ? $user_id : $request->user()->id)->get();
+        return Follow::where('following_id', $user_id ? $user_id : $request->user()->id)->join('users', 'users.id', '=', 'follows.follower_id')->select('follows.*', 'users.id AS user_id', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->get();
     }
 
     public function getFollowings(Request $request, $user_id = null)
     {
-        return Follow::where('follower_id', $user_id ? $user_id : $request->user()->id)->get();
+        return Follow::where('follower_id', $user_id ? $user_id : $request->user()->id)->join('users', 'users.id', '=', 'follows.following_id')->select('follows.*', 'users.id AS user_id', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->get();
     }
 
     public function countFollows(Request $request, $user_id = null)

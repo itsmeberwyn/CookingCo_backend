@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::patch("/comment/{id}", [CommentController::class, 'update'])->name('comment.update');
     Route::get("/comment", [CommentController::class, 'index'])->name('comment.index');
     Route::post("/comment", [CommentController::class, 'store'])->name('comment.store');
-    Route::post("/remove/comment/{id}", [CommentController::class, 'delete'])->name('comment.delete');
+    Route::post("/remove/comment/{id}", [CommentController::class, 'remove'])->name('comment.delete');
 
     // rate
     Route::get("/rate", [RatingController::class, 'index'])->name('rate.index');
