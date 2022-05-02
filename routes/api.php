@@ -32,8 +32,8 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('auth', AuthController::class);
 Route::get("/test", [AuthController::class, 'test'])->name('test');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login.login');
+Route::post('/register', [AuthController::class, 'register'])->name('register.register');
 Route::post('/loginsocial', [AuthController::class, 'registerOrLoginUser'])->name('socialauth');
 
 // NOTE: next job!

@@ -423,11 +423,11 @@
                 @endauth
             </div>
         @endif
-        <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+        {{-- <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
             <a href="{{ route('login.google') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Google</a>
             <a href="{{ route('login.facebook') }}"
                 class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Facebook</a>
-        </div>
+        </div> --}}
 
 
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
