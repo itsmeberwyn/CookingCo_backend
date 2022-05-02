@@ -37,6 +37,7 @@ class CreateCommentsTable extends Migration
             $table->dropColumn('user_id');
             $table->dropForeign(['post_id']);
             $table->dropColumn('post_id');
+            $table->dropSoftDeletes();
         });
     }
 }

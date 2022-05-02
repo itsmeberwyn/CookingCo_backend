@@ -6,19 +6,21 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
 
     // getting user using token
-    // public function index(Request $request)
-    // {
-    //     return $request->bearerToken();
-    //     return Auth::user();
-    // }
+    public function test(Request $request)
+    {
+        return $request->bearerToken();
+        return Auth::user();
+    }
 
     public function __construct()
     {
@@ -30,7 +32,7 @@ class AuthController extends Controller
     }
 
     // login
-    public function index(Request $request)
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email'],
@@ -44,26 +46,36 @@ class AuthController extends Controller
         $user = User::where('email',  $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => "Bad credentials"
-            ], 401);
+            return [
+                'message' => "Bad credentials",
+                'status' => 401
+            ];
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        $token = $user->createToken('cookingcousertoken')->plainTextToken;
 
 
         $response = [
             'user' => $user,
             'token' => $token,
+            'status' => 200
         ];
 
-        return response($response, 200);
+        return $response;
     }
 
     // register
-    public function store(Request $request)
+    public function register(Request $request)
     {
-        $fields = $request->validate([
+        // $fields = $request->validate([
+        //     'firstname' => ['required', 'string'],
+        //     'lastname' => ['required', 'string'],
+        //     'username' => ['required', 'string'],
+        //     'email' => ['required', 'string', 'unique:users', 'email'],
+        //     'password' => ['required', 'string', 'confirmed']
+        // ]);
+
+        $fields = Validator::make($request->all(), [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
             'username' => ['required', 'string'],
@@ -71,12 +83,20 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'confirmed']
         ]);
 
+        if ($fields->fails()) {
+            return [
+                'error' => 'Bad credentials',
+                'status' => 401
+            ];
+        }
+
         $user = User::create([
-            'firstname' => $fields['firstname'],
-            'lastname' => $fields['lastname'],
-            'username' => $fields['username'],
-            'email' => $fields['email'],
-            'password' => Hash::make($fields['password']),
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'username' => $request->username,
+            'profile_image' => 'default-img.webp',
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
         $token = $user->createToken('cookingcousertoken')->plainTextToken;
@@ -84,9 +104,10 @@ class AuthController extends Controller
         $response = [
             'user' => $user,
             'token' => $token,
+            'status' => 200
         ];
 
-        return response($response, 201);
+        return $response;
     }
 
     // logout
@@ -110,5 +131,35 @@ class AuthController extends Controller
                 'message' => "Something went wrong",
             ];
         }
+    }
+
+    // NOTE: handling Google and Facebook Auth
+
+    public function registerOrLoginUser(Request $request)
+    {
+        // return ['data' => $request->all()];
+        $user = User::where('email',  $request->email)->first();
+        if (!$user) {
+            $user = new User;
+            $user->firstname = $request->firstname;
+            $user->lastname = $request->lastname;
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->provider_id = $request->provider_id;
+            $user->profile_image = $request->profile_image;
+            $user->save();
+        }
+
+        Auth::login($user);
+
+        $token = $user->createToken('cookingcousertoken')->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token,
+            'status' => 200
+        ];
+        // dd($response);
+        return ['data' => $response];
     }
 }

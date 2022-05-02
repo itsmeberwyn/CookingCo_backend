@@ -5,20 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Rating extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'title',
-        'caption',
-        'tag',
-        'post_image',
+        'post_id',
+        'rate',
     ];
-
-    public function recipe()
-    {
-        return $this->hasOne(Recipe::class);
-    }
 }
