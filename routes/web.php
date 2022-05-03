@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\ReportUsersController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\PostController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/user/{user_id}', [UserController::class, 'index'])->name('user');
+Route::get('/post/{post_id}', [PostController::class, 'index'])->name('post');
+Route::get('/report-users', [ReportUsersController::class, 'index'])->name('reportuser');
 
 Auth::routes();
 

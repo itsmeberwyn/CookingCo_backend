@@ -20,6 +20,9 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/table.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="{{ asset('js/jquery-3.6.0.js') }}"></script>
+
 </head>
 
 <body>
@@ -64,7 +67,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownReport">
-                                    <a class="dropdown-item" href="{{ url('/') }}">
+                                    <a class="dropdown-item" href="{{ route('reportuser') }}">
                                         View Reported Users
                                     </a>
                                     <a class="dropdown-item" href="{{ url('/') }}">
@@ -84,7 +87,7 @@
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                                                                                         document.getElementById('logout-form').submit();">
+                                                                                                                                                     document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
