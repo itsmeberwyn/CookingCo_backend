@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class ProfileController extends Controller
 {
@@ -28,6 +29,9 @@ class ProfileController extends Controller
             $image = $request->profile_image['base64String']; // image base64 encoded
             $compPic =  '_image' . time() . '.' . $request->profile_image['format'];
             Storage::disk('public')->put('profiles/' . $compPic, base64_decode($image));
+
+            $image = Image::make(public_path("storage/posts/profiles/{$compPic}"))->fit(1200, 1200);
+            $image->save();
 
             $user->profile_image = $compPic;
         }

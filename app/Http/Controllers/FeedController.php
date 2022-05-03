@@ -14,7 +14,7 @@ class FeedController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.profile_image')->with('recipe')->skip($request->get('skip'))->take(6)->inRandomOrder()->get();
+        $posts = Post::join('users', 'users.id', '=', 'posts.user_id')->select('posts.*', 'users.firstname', 'users.lastname', 'users.username', 'users.email', 'users.provider_id', 'users.profile_image')->with('recipe')->skip($request->get('skip'))->take(6)->inRandomOrder()->get();
 
         foreach ($posts as $key => $post) {
             $file = Storage::url('public/posts/' . $post->post_image);

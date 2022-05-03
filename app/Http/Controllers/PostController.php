@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+
 
 class PostController extends Controller
 {
@@ -16,9 +18,14 @@ class PostController extends Controller
         DB::beginTransaction();
         try {
 
-            $image = $request->post_image['base64String']; // image base64 encoded
+
+            $image = base64_decode($request->post_image['base64String']); // image base64 encoded
             $compPic =  '_image' . time() . '.' . $request->post_image['format'];
-            Storage::disk('public')->put($compPic, base64_decode($image));
+
+            Storage::disk('public')->put($compPic, $image);
+
+            $image = Image::make(public_path("storage/posts/{$compPic}"))->fit(1200, 1200);
+            $image->save();
 
 
             $post_id = DB::table('posts')->insertGetId(array(
