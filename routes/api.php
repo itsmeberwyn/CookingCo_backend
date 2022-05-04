@@ -66,6 +66,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // search
     Route::get("/search", [FeedController::class, 'search'])->name('feed.search');
+    Route::get("/searchuser", [FeedController::class, 'searchuser'])->name('feed.searchuser');
     Route::get("/popular", [FeedController::class, 'popularPost'])->name('feed.popular');
     Route::get("/randomrecipe", [FeedController::class, 'getRandomRecipe'])->name('feed.randomrecipe');
 

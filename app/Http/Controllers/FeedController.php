@@ -70,6 +70,18 @@ class FeedController extends Controller
         return ['tags' => $posts, 'titlecaption' => $postsTitleCaption, 'users' => $users];
     }
 
+    public function searchuser(Request $request)
+    {
+        $search = $request->get('tag');
+        $users = User::query()
+            ->where('firstname', 'LIKE', "%{$search}%")
+            ->orWhere('lastname', 'LIKE', "%{$search}%")
+            ->orWhere('username', 'LIKE', "%{$search}%")->select('users.firstname', 'users.lastname', 'users.username', 'users.profile_image', 'users.id', 'users.provider_id')
+            ->get();
+
+        return ['users' => $users];
+    }
+
     public function popularPost(Request $request)
     {
 
