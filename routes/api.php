@@ -5,6 +5,7 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
@@ -84,6 +85,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post("/removebookmark", [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
     Route::post("/bookmark", [BookmarkController::class, 'store'])->name('bookmark.store');
     Route::get("/bookmark", [BookmarkController::class, 'index'])->name('bookmark.index');
+
+    // message
+    Route::get("/message", [MessageController::class, 'index'])->name('message.index');
+    Route::post("/message", [MessageController::class, 'store'])->name('message.store');
+    Route::get("/checkInbox", [MessageController::class, 'checkInbox'])->name('message.checkInbox');
 });
 
 
