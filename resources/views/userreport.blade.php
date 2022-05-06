@@ -52,7 +52,11 @@
                                                 onClick="lookup_users({{ $reported->user_id }})">
                                                 <i class="bi bi-eye"></i>
                                             </label>
-                                            <label class="btn btn-warning">
+                                            <label
+                                                class="btn btn-warning <?php if ($reported->isSeen == false){ ?>
+                                                disable_link <?php   } ?>"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-{{ $reported->user_id }}">
                                                 <i class="bi bi-exclamation-circle"></i>
                                             </label>
                                             <label class="btn btn-danger">
@@ -62,9 +66,50 @@
                                     </td>
 
                                 </tr>
+                                <div class="modal fade" id="exampleModal-{{ $reported->user_id }}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>You are about to send a warning to user {{ $reported->firstname }}
+                                                    {{ $reported->lastname }}. Are you sure you want to continue?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    onClick="warn_users({{ $reported->user_id }})">Yes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </tbody>
                     </table>
+
+
+                    @if (\Session::has('success'))
+                        <div class="modal fade" id="succes-modal" tabindex="-1"
+                            aria-labelledby="exampleModalLabel-success" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel-success">Success</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{!! \Session::get('success') !!}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -73,7 +118,13 @@
         </div>
     </div>
 
+
+
     <script>
+        $(window).on('load', function() {
+            $('#succes-modal').modal('show');
+        });
+
         $(document).ready(function() {
             console.log("ready")
             // $('#checkuser').click(function(e) {
@@ -83,6 +134,10 @@
 
         function lookup_users(user_id) {
             window.location.href = '/user/' + user_id;
+        }
+
+        function warn_users(user_id) {
+            window.location.href = '/warn-user?id=' + user_id;
         }
     </script>
 @endsection

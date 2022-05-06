@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ReportCommentsController;
 use App\Http\Controllers\Admin\ReportPostsController;
+use App\Http\Controllers\Admin\WarnUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,7 @@ Route::get('/post/{post_id}', [PostController::class, 'index'])->name('post');
 Route::get('/report-users', [ReportUsersController::class, 'index'])->name('reportuser');
 Route::get('/report-posts', [ReportPostsController::class, 'index'])->name('reportpost');
 Route::get('/report-comments', [ReportCommentsController::class, 'index'])->name('reportcomment');
+Route::get('/warn-user', [WarnUserController::class, 'create'])->name('warn');
 
 Auth::routes();
 

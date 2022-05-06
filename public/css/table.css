@@ -7,3 +7,8 @@ html {
 .hidden {
     display: none;
 }
+
+.disable_link {
+    pointer-events: none;
+    opacity: 0.6;
+}
