@@ -84,7 +84,8 @@
 
                         <div class="comments">
                             @foreach ($comments as $comment)
-                                <div class="d-flex flex-row mb-2 border-bottom pb-2"> <img
+                                <div class="d-flex flex-row mb-2 border-bottom pb-2"
+                                    id="{{ preg_replace('/\s+/', '-', $comment->message) }}"> <img
                                         src="{{ asset('storage/posts/profiles/' . $comment->profile_image) }}" width="40"
                                         class="rounded-image">
                                     <div class="d-flex flex-column ms-2">
