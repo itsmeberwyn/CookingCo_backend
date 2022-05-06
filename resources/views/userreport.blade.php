@@ -16,8 +16,8 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Message</th>
+                                <th scope="col">No. of Report</th>
                                 <th scope="col">Action</th>
-                                {{-- <th scope="col">Lead Score</th> --}}
                                 {{-- <th></th> --}}
                             </tr>
                         </thead>
@@ -33,6 +33,8 @@
                                     <td data-label="Email"> <a class="text-current" href="#">robert.fox@example.com</a>
                                     </td>
                                     <td data-label="Message">test test test message
+                                    </td>
+                                    <td data-label="report">5
                                     </td>
                                     <td class='text-wrap'>
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">

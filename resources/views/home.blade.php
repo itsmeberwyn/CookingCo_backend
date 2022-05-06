@@ -19,7 +19,7 @@
             </div>
         </div> --}}
 
-    <div class="p-10 bg-surface-secondary">
+    <div class="p-10 bg-surface-secondary" style='height:calc(100vh - 87.99px);'>
         <div class="container">
             <div class="card">
                 <div class="card-header">
@@ -30,7 +30,7 @@
                     <table class="table table-hover table-nowrap">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th scope="col">No.</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
@@ -40,41 +40,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < 10; $i++)
+                            @foreach ($feedbacks as $i => $feedback)
                                 <tr>
-                                    <td data-label="ID"> <span>{{ $i }}</span> </td>
-                                    <td data-label="Name"> <img alt="..."
-                                            src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80"
-                                            class="avatar avatar-sm rounded-circle me-2"> <a
-                                            class="text-heading font-semibold" href="#"> Robert Fox </a> </td>
-                                    <td data-label="Username"> <span>Kamote</span> </td>
-                                    <td data-label="Eamil"> <a class="text-current" href="#">robert.fox@example.com</a>
+                                    <td data-label="No.">
+                                        <span>{{ ($feedbacks->currentPage() - 1) * $feedbacks->perPage() + $loop->iteration }}</span>
+                                    </td>
+                                    <td data-label="Name">
+                                        <img alt="..."
+                                            src="{{ asset('storage/posts/profiles/' . $feedback->profile_image) }}"
+                                            onerror="this.onerror=null;this.src='{{ $feedback->profile_image }}';"
+                                            class="avatar avatar-sm rounded-circle me-2">
+
+                                        <a class="text-heading font-semibold" href="/user/{{ $feedback->user_id }}">
+                                            {{ $feedback->firstname }}
+                                            {{ $feedback->lastname }}</a>
+                                    </td>
+                                    <td data-label="Username"> <span>{{ $feedback->username }}</span> </td>
+                                    <td data-label="Eamil"> <a class="text-current" href="#">{{ $feedback->email }}</a>
                                     </td>
                                     <td class='text-wrap'>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis voluptates,
-                                        maiores obcaecati tempora assumenda consequuntur quasi doloribus dolorem fuga
-                                        laudantium sint commodi earum vel temporibus dolores similique corrupti cum?
-                                        Laudantium.
+                                        {{ $feedback->message }}
                                     </td>
-                                    {{-- <td data-label="Company"> <span class="badge bg-soft-success text-success">7/10</span>
-                                    </td>
-                                    <td data-label="" class="text-end">
-                                        <div class="dropdown"> <a class="text-muted" href="#" role="button"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
-                                                    class="bi bi-three-dots-vertical"></i> </a>
-                                            <div class="dropdown-menu dropdown-menu-end"> <a href="#!"
-                                                    class="dropdown-item"> Action </a> <a href="#!" class="dropdown-item">
-                                                    Another action </a> <a href="#!" class="dropdown-item"> Something
-                                                    else
-                                                    here </a> </div>
-                                        </div>
-                                    </td> --}}
                                 </tr>
-                            @endfor
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+        <div class="mt-5 d-flex justify-content-center">
+            {!! $feedbacks->links() !!}
         </div>
     </div>
 @endsection

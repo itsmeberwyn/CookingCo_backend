@@ -20,9 +20,6 @@ class UserController extends Controller
         $totalPost = Post::where('user_id', $request->route()->parameter('user_id'))->count();
         $user = User::find($request->route()->parameter('user_id'));
 
-
-        // dd($recipe);
-
         return view('user', compact('posts', 'user', 'totalPost', 'recipes'));
     }
 }
