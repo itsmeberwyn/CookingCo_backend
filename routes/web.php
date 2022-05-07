@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BanUserController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ReportUsersController;
 use App\Http\Controllers\Admin\UserController;
@@ -33,6 +34,7 @@ Route::get('/report-users', [ReportUsersController::class, 'index'])->name('repo
 Route::get('/report-posts', [ReportPostsController::class, 'index'])->name('reportpost');
 Route::get('/report-comments', [ReportCommentsController::class, 'index'])->name('reportcomment');
 Route::get('/warn-user', [WarnUserController::class, 'create'])->name('warn');
+Route::post('/ban-user', [BanUserController::class, 'create'])->name('ban');
 
 Auth::routes();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ban_user;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BanUserController extends Controller
@@ -23,9 +24,19 @@ class BanUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+        $ban = new Ban_user;
+
+        $ban->user_id = $request->id;
+        $ban->ban_till = Carbon::now()->addDays($request->banuser)->format('d-m-Y');
+
+        if ($ban->save()) {
+            return redirect()->back()->with('success', 'The user has been ban successfully');
+        } else {
+            return ['status' => 'Failed', 'message' => 'Something went wrong'];
+        }
     }
 
     /**
