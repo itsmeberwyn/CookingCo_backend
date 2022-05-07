@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ban_user;
 use App\Models\Reported_post;
 use App\Models\Reported_user;
 use App\Models\Warn_user;
@@ -16,16 +17,27 @@ class ReportPostsController extends Controller
 
 
         foreach ($reported_posts as $user) {
-            $data = Warn_user::where('user_id', $user->user_id)->first();
+            $datawarn = Warn_user::where('user_id', $user->user_id)->first();
+            $databan = Ban_user::where('user_id', $user->user_id)->first();
 
-            if ($data != null) {
-                if ($data->deleted_at == null) {
-                    $user['isSeen'] = false;
-                } else {
+            if ($datawarn != null) {
+                if ($datawarn->deleted_at == null) {
                     $user['isSeen'] = true;
+                } else {
+                    $user['isSeen'] = false;
                 }
             } else {
-                $user['isSeen'] = true;
+                $user['isSeen'] = false;
+            }
+
+            if ($databan != null) {
+                if ($databan->deleted_at == null) {
+                    $user['isBan'] = true;
+                } else {
+                    $user['isBan'] = false;
+                }
+            } else {
+                $user['isBan'] = false;
             }
         }
 

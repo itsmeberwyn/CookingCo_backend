@@ -136,7 +136,7 @@
                                                             class="list-group-item list-group-item-action">
                                                             <div class='form-check'>
                                                                 <input class="form-check-input" type="radio" name="banuser"
-                                                                    id="ban1day" value="1">
+                                                                    id="ban1day-{{ $reported->user_id }}" value="1">
                                                                 <label class="form-check-label" for="ban1day">
                                                                     Ban for 1 Day
                                                                 </label>
@@ -146,7 +146,7 @@
                                                             class="list-group-item list-group-item-action">
                                                             <div class='form-check'>
                                                                 <input class="form-check-input" type="radio" name="banuser"
-                                                                    id="ban3days" value="3">
+                                                                    id="ban3days-{{ $reported->user_id }}" value="3">
                                                                 <label class="form-check-label" for="ban3days">
                                                                     Ban for 3 Days
                                                                 </label>
@@ -156,7 +156,7 @@
                                                             class="list-group-item list-group-item-action">
                                                             <div class='form-check'>
                                                                 <input class="form-check-input" type="radio" name="banuser"
-                                                                    id="ban5days" value="5">
+                                                                    id="ban5days-{{ $reported->user_id }}" value="5">
                                                                 <label class="form-check-label" for="ban5days">
                                                                     Ban for 5 Days
                                                                 </label>
@@ -167,8 +167,8 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModal-makesure-{{ $reported->user_id }}">Save
+                                                    <button type="button" class="btn btn-primary"
+                                                        onClick="ban_user('{{ $reported->user_id }}')">Save
                                                         changes</button>
                                                 </div>
                                             </div>
@@ -225,6 +225,16 @@
 
         function warn_user(user_id) {
             window.location.href = '/warn-user?id=' + user_id;
+        }
+
+        function ban_user(modalid) {
+            if (document.querySelector(`input[id="ban1day-${modalid}"]:checked`)?.value || document.querySelector(
+                    `input[id="ban3days-${modalid}"]:checked`)?.value || document.querySelector(
+                    `input[id="ban5days-${modalid}"]:checked`)
+                ?.value) {
+                $('#exampleModal-ban-' + modalid).modal('hide');
+                $('#exampleModal-makesure-' + modalid).modal('show');
+            }
         }
     </script>
 @endsection

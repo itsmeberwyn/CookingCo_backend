@@ -47,7 +47,7 @@
                                     <td class='text-wrap'>
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                             <label class="btn btn-success" id='checkuser'
-                                                onClick="lookup_users({{ $reported->post_id }}, '{{ $reported->message }}')">
+                                                onClick="lookup_user({{ $reported->post_id }}, '{{ $reported->message }}')">
                                                 <i class="bi bi-eye"></i>
                                             </label>
                                             <label
@@ -57,7 +57,11 @@
                                                 data-bs-target="#exampleModal-{{ $reported->user_id }}">
                                                 <i class="bi bi-exclamation-circle"></i>
                                             </label>
-                                            <label class="btn btn-danger">
+                                            <label
+                                                class="btn btn-danger  <?php if ($reported->isBan){ ?>
+                                                disable_link <?php   } ?>"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-ban-{{ $reported->user_id }}">
                                                 <i class="bi bi-x-octagon"></i>
                                             </label>
                                         </div>
@@ -81,11 +85,92 @@
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Cancel</button>
                                                 <button type="button" class="btn btn-primary"
-                                                    onClick="warn_users({{ $reported->user_id }})">Yes</button>
+                                                    onClick="warn_user({{ $reported->user_id }})">Yes</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- for verifying the ban --}}
+                                <form method="post" action="{{ url('/ban-user?id=' . $reported->user_id) }}">
+                                    @csrf
+                                    <div class="modal fade" id="exampleModal-makesure-{{ $reported->user_id }}"
+                                        tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>You are about to ban user {{ $reported->firstname }}
+                                                        {{ $reported->lastname }}. Are you sure you want to continue?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- for banning user --}}
+                                    <div class="modal fade" id="exampleModal-ban-{{ $reported->user_id }}"
+                                        tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Ban User</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="list-group">
+                                                        <button type="button"
+                                                            class="list-group-item list-group-item-action">
+                                                            <div class='form-check'>
+                                                                <input class="form-check-input" type="radio" name="banuser"
+                                                                    id="ban1day-{{ $reported->user_id }}" value="1">
+                                                                <label class="form-check-label" for="ban1day">
+                                                                    Ban for 1 Day
+                                                                </label>
+                                                            </div>
+                                                        </button>
+                                                        <button type="button"
+                                                            class="list-group-item list-group-item-action">
+                                                            <div class='form-check'>
+                                                                <input class="form-check-input" type="radio" name="banuser"
+                                                                    id="ban3days-{{ $reported->user_id }}" value="3">
+                                                                <label class="form-check-label" for="ban3days">
+                                                                    Ban for 3 Days
+                                                                </label>
+                                                            </div>
+                                                        </button>
+                                                        <button type="button"
+                                                            class="list-group-item list-group-item-action">
+                                                            <div class='form-check'>
+                                                                <input class="form-check-input" type="radio" name="banuser"
+                                                                    id="ban5days-{{ $reported->user_id }}" value="5">
+                                                                <label class="form-check-label" for="ban5days">
+                                                                    Ban for 5 Days
+                                                                </label>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onClick="ban_user('{{ $reported->user_id }}')">Save
+                                                        changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             @endforeach
                         </tbody>
                     </table>
@@ -125,13 +210,23 @@
             // });
         });
 
-        function lookup_users(post_id, message) {
+        function lookup_user(post_id, message) {
             let slug = message.replaceAll(' ', '-')
             window.location.href = '/post/' + post_id + "#" + slug;
         }
 
-        function warn_users(user_id) {
+        function warn_user(user_id) {
             window.location.href = '/warn-user?id=' + user_id;
+        }
+
+        function ban_user(modalid) {
+            if (document.querySelector(`input[id="ban1day-${modalid}"]:checked`)?.value || document.querySelector(
+                    `input[id="ban3days-${modalid}"]:checked`)?.value || document.querySelector(
+                    `input[id="ban5days-${modalid}"]:checked`)
+                ?.value) {
+                $('#exampleModal-ban-' + modalid).modal('hide');
+                $('#exampleModal-makesure-' + modalid).modal('show');
+            }
         }
     </script>
 @endsection
