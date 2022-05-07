@@ -35,18 +35,23 @@ class MessageController extends Controller
     {
         $messageFrom = Message::where('from', $request->from)->orwhere('to', $request->from)->orderBy('created_at', 'desc')->get()->unique('criteria_id');
 
+        $messageInbox = array();
         foreach ($messageFrom as $key => $message) {
             if ($request->from !== $message->from) {
                 // array_push($arr, $message);
                 $user = User::find($message->from);
                 $messageFrom[$key]['user'] = $user;
+
+                array_push($messageInbox, $message);
             } else if ($request->from !== $message->to) {
                 $user = User::find($message->to);
                 $messageFrom[$key]['user'] = $user;
+
+                array_push($messageInbox, $message);
             }
         }
 
-        return ['status' => 'success', 'data' => $messageFrom];
+        return ['status' => 'success', 'data' => $messageInbox];
     }
 
     public function store(Request $request)
