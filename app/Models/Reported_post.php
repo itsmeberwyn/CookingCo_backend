@@ -15,5 +15,7 @@ class Reported_post extends Model
         'user_id',
         'post_id',
         'reason',
+        'reported_by',
+        'noreports',
     ];
 }

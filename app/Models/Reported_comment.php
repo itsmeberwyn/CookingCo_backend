@@ -15,5 +15,7 @@ class Reported_comment extends Model
         'user_id',
         'comment_id',
         'reason',
+        'reported_by',
+        'noreports',
     ];
 }

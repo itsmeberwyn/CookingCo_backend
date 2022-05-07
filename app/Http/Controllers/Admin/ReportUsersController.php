@@ -45,4 +45,40 @@ class ReportUsersController extends Controller
 
         return view('userreport', compact('reported_users'));
     }
+
+    public function create(Request $request)
+    {
+        $user = Reported_user::where('user_id', $request->user_id)->get();
+        $reported_user = new Reported_user;
+
+
+        if (blank($user)) {
+            $reported_user->user_id = $request->user_id;
+            $reported_user->reason = json_encode([$request->reason]);
+            $reported_user->reported_by = json_encode([$request->user()->id]);
+            $reported_user->noreports = '1';
+
+            if ($reported_user->save()) {
+                return ['status' => 'success', 'message' => 'Report sent successfully'];
+            } else {
+                return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            }
+        } else {
+            $reason = json_decode($user[0]->reason);
+            $reported_by = json_decode($user[0]->reported_by);
+
+            array_push($reason, $request->reason);
+            array_push($reported_by, $request->user()->id);
+
+            $user[0]->reason = json_encode($reason);
+            $user[0]->reported_by = json_encode($reported_by);
+            $user[0]->noreports = (int)$user[0]->noreports + 1;
+
+            if ($user[0]->save()) {
+                return ['status' => 'success', 'message' => 'Report sent successfully'];
+            } else {
+                return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            }
+        }
+    }
 }

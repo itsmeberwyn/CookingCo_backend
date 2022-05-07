@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\ReportCommentsController;
+use App\Http\Controllers\Admin\ReportPostsController;
+use App\Http\Controllers\Admin\ReportUsersController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentController;
@@ -46,6 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("/profile/{user_id?}", [PostController::class, 'index'])->name('post.index');
     Route::get("/recipe/{user_id?}", [PostController::class, 'getDataRecipe'])->name('post.recipe');
     Route::post("/updatepost", [PostController::class, 'patch'])->name('post.patch');
+    Route::post("/removepost/{id}", [PostController::class, 'remove'])->name('post.remove');
 
     // comment
     Route::patch("/comment/{id}", [CommentController::class, 'update'])->name('comment.update');
@@ -90,6 +95,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("/message", [MessageController::class, 'index'])->name('message.index');
     Route::post("/message", [MessageController::class, 'store'])->name('message.store');
     Route::get("/checkInbox", [MessageController::class, 'checkInbox'])->name('message.checkInbox');
+
+
+    Route::post("/report-post", [ReportPostsController::class, 'create'])->name('reportpost.create');
+    Route::post("/report-user", [ReportUsersController::class, 'create'])->name('reportuser.create');
+    Route::post("/report-comment", [ReportCommentsController::class, 'create'])->name('reportcomment.create');
+    Route::post("/feedback", [UserController::class, 'create'])->name('userfeedback.create');
 });
 
 

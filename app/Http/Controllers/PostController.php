@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Recipe;
 use App\Models\User;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -143,6 +144,16 @@ class PostController extends Controller
         } catch (\Exception $e) {
             return ['status' => 'Failed', 'message' => 'Something went wrong'];
             DB::rollback();
+        }
+    }
+
+    public function remove(Request $request)
+    {
+        try {
+            Post::where('id', $request->route()->parameter('id'))->where('user_id', $request->user()->id)->delete();
+            return response()->json(['status' => 'success', 'message' => 'Deleted successfully']);
+        } catch (QueryException $e) {
+            return response()->json(['status' => 'Failed', 'message' => 'Something went wrong']);
         }
     }
 }

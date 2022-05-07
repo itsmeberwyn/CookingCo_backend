@@ -14,5 +14,7 @@ class Reported_user extends Model
     protected $fillable = [
         'user_id',
         'reason',
+        'reported_by',
+        'noreports',
     ];
 }

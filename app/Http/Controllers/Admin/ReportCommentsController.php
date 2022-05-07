@@ -42,4 +42,41 @@ class ReportCommentsController extends Controller
 
         return view('commentreport', compact('reported_comments'));
     }
+
+    public function create(Request $request)
+    {
+        $comment = Reported_comment::where('user_id', $request->user_id)->get();
+        $reported_comment = new Reported_comment;
+
+
+        if (blank($comment)) {
+            $reported_comment->user_id = $request->user_id;
+            $reported_comment->comment_id = $request->comment_id;
+            $reported_comment->reason = json_encode([$request->reason]);
+            $reported_comment->reported_by = json_encode([$request->user()->id]);
+            $reported_comment->noreports = '1';
+
+            if ($reported_comment->save()) {
+                return ['status' => 'success', 'message' => 'Report sent successfully'];
+            } else {
+                return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            }
+        } else {
+            $reason = json_decode($comment[0]->reason);
+            $reported_by = json_decode($comment[0]->reported_by);
+
+            array_push($reason, $request->reason);
+            array_push($reported_by, $request->user()->id);
+
+            $comment[0]->reason = json_encode($reason);
+            $comment[0]->reported_by = json_encode($reported_by);
+            $comment[0]->noreports = (int)$comment[0]->noreports + 1;
+
+            if ($comment[0]->save()) {
+                return ['status' => 'success', 'message' => 'Report sent successfully'];
+            } else {
+                return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            }
+        }
+    }
 }

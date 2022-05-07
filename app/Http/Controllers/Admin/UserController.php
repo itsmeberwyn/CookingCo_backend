@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Feedback;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,5 +22,18 @@ class UserController extends Controller
         $user = User::find($request->route()->parameter('user_id'));
 
         return view('user', compact('posts', 'user', 'totalPost', 'recipes'));
+    }
+
+    public function create(Request $request)
+    {
+        $feedback = new Feedback();
+        $feedback->user_id = $request->user_id;
+        $feedback->message = $request->message;
+
+        if ($feedback->save()) {
+            return ['status' => 'success', 'message' => 'Feedback sent successfully'];
+        } else {
+            return ['status' => 'Failed', 'message' => 'Something went wrong'];
+        }
     }
 }
