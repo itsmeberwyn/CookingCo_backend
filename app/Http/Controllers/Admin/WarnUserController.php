@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Warn_user;
+use Doctrine\DBAL\Query\QueryException;
+use Exception;
 use Illuminate\Http\Request;
 
 class WarnUserController extends Controller
@@ -13,9 +15,10 @@ class WarnUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $users = Warn_user::where('user_id', $request->get('id'))->get();
+        return ['data' => $users];
     }
 
     /**
@@ -88,8 +91,13 @@ class WarnUserController extends Controller
      * @param  \App\Models\Warn_user  $warn_user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Warn_user $warn_user)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            Warn_user::where('user_id', $request->user_id)->delete();
+            return response()->json(['status' => 'success', 'message' => 'Deleted successfully']);
+        } catch (QueryException $e) {
+            return response()->json(['status' => 'Failed', 'message' => 'Something went wrong']);
+        }
     }
 }

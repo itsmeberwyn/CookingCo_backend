@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\BanUserController;
 use App\Http\Controllers\Admin\ReportCommentsController;
 use App\Http\Controllers\Admin\ReportPostsController;
 use App\Http\Controllers\Admin\ReportUsersController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\WarnUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentController;
@@ -101,6 +103,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post("/report-user", [ReportUsersController::class, 'create'])->name('reportuser.create');
     Route::post("/report-comment", [ReportCommentsController::class, 'create'])->name('reportcomment.create');
     Route::post("/feedback", [UserController::class, 'create'])->name('userfeedback.create');
+
+    Route::get("/check-ban", [BanUserController::class, 'index'])->name('userban.index');
+    Route::get("/check-warn", [WarnUserController::class, 'index'])->name('userwarn.index');
+    Route::post("/warn-seen", [WarnUserController::class, 'destroy'])->name('userwarn.destroy');
 });
 
 

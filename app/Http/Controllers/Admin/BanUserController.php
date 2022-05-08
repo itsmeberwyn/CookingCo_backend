@@ -14,9 +14,10 @@ class BanUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $users = Ban_user::where('user_id', $request->get('id'))->get();
+        return ['data' => $users];
     }
 
     /**
