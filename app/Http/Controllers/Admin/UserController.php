@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Feedback;
+use App\Models\Follow;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,7 +22,10 @@ class UserController extends Controller
         $totalPost = Post::where('user_id', $request->route()->parameter('user_id'))->count();
         $user = User::find($request->route()->parameter('user_id'));
 
-        return view('user', compact('posts', 'user', 'totalPost', 'recipes'));
+        $countFollowers = Follow::where('following_id', $user->id)->count();
+        $countFollowings = Follow::where('follower_id', $user->id)->count();
+
+        return view('user', compact('posts', 'user', 'totalPost', 'recipes', 'countFollowers', 'countFollowings'));
     }
 
     public function create(Request $request)

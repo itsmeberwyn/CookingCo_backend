@@ -10,9 +10,11 @@
                         <div class="d-flex flex-row align-items-center"> <img
                                 src={{ asset('storage/posts/profiles/' . $post[0]->profile_image) }} width="50"
                                 class="rounded-circle">
-                            <div class="d-flex flex-column ms-2 text-capitalize"> <span
-                                    class="font-weight-bold">{{ $post[0]->firstname }}
-                                    {{ $post[0]->lastname }}</span>
+                            <div class="d-flex flex-column ms-2 text-capitalize">
+                                <a href="/user/{{ $post[0]->user_id }}" class="text-black">
+                                    <span class="font-weight-bold">{{ $post[0]->firstname }}
+                                        {{ $post[0]->lastname }}</span>
+                                </a>
                                 <small class="text-primary">{{ $post[0]->email }}</small>
                             </div>
                         </div>
@@ -77,10 +79,10 @@
                         @endif
 
 
-                        <div class="d-flex justify-content-between align-items-center">
+                        {{-- <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex flex-row muted-color"> <span>2 comments</span></div>
-                        </div>
-                        <hr>
+                        </div> --}}
+                        {{-- <hr> --}}
 
                         <div class="comments">
                             @foreach ($comments as $comment)

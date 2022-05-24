@@ -51,7 +51,7 @@
                                                 <i class="bi bi-eye"></i>
                                             </label>
                                             <label
-                                                class="btn btn-warning <?php if ($reported->isSeen == false){ ?>
+                                                class="btn btn-warning <?php if ($reported->isSeen){ ?>
                                                 disable_link <?php   } ?>"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-{{ $reported->user_id }}">

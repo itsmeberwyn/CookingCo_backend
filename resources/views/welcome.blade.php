@@ -156,14 +156,14 @@
     </div>
 
     <!--searchbar-->
-    <nav class="navbar navbar-light">
+    {{-- <nav class="navbar navbar-light">
         <div class="container-fluid">
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-success" type="submit">Search</button>
             </form>
         </div>
-    </nav>
+    </nav> --}}
     <!--searchbar end-->
 
     <!---Displays-->

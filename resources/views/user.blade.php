@@ -6,8 +6,8 @@
         <div class="card p-3" style='width:700px;'>
             <div class="d-flex align-items-start">
                 <div class="image">
-                    <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-                        class="rounded" width="120" height='120'>
+                    <img src="{{ asset('storage/posts/profiles/' . $user->profile_image) }}" class="rounded"
+                        width="120" height='120'>
                 </div>
 
                 <div class="ms-3 w-100">
@@ -22,11 +22,11 @@
                         </div>
                         <div class="d-flex flex-column align-items-center">
                             <span class="articles">Following</span>
-                            <span class="number1">38</span>
+                            <span class="number1">{{ $countFollowings }}</span>
                         </div>
                         <div class="d-flex flex-column align-items-center">
                             <span class="followers">Followers</span>
-                            <span class="number2">980</span>
+                            <span class="number2">{{ $countFollowers }}</span>
                         </div>
                     </div>
 
@@ -58,9 +58,11 @@
                     <div class='row mt-4 row__card' id='row_{{ $loop->index + 1 }}'>
                         @foreach ($chunks as $post)
                             <div class=" col-6 d-flex justify-content-center" style="width: 200px; height: 200px;">
-                                <img class="card-img-top rounded border"
-                                    style="width: 180px; height: 180px; object-fit: cover;"
-                                    src="{{ asset('storage/posts/' . $post->post_image) }}" alt="Card image cap">
+                                <a href="/post/{{ $post->id }}">
+                                    <img class="card-img-top rounded border"
+                                        style="width: 180px; height: 180px; object-fit: cover;"
+                                        src="{{ asset('storage/posts/' . $post->post_image) }}" alt="Card image cap">
+                                </a>
                             </div>
                         @endforeach
                     </div>
@@ -72,9 +74,11 @@
                     <div class='row mt-4 recipe__row__card' id='recipe_row_{{ $loop->index + 1 }}'>
                         @foreach ($chunks as $post)
                             <div class=" col-6 d-flex justify-content-center" style="width: 200px; height: 200px;">
-                                <img class="card-img-top rounded border"
-                                    style="width: 180px; height: 180px; object-fit: cover;"
-                                    src="{{ asset('storage/posts/' . $post->post_image) }}" alt="Card image cap">
+                                <a href="/post/{{ $post->id }}">
+                                    <img class="card-img-top rounded border"
+                                        style="width: 180px; height: 180px; object-fit: cover;"
+                                        src="{{ asset('storage/posts/' . $post->post_image) }}" alt="Card image cap">
+                                </a>
                             </div>
                         @endforeach
                     </div>
