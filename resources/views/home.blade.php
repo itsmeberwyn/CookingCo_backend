@@ -19,7 +19,13 @@
             </div>
         </div> --}}
 
+
     <div class="p-10 bg-surface-secondary" style='height:calc(100vh - 87.99px);'>
+        <div class="text-center " style="font-weight:bold">
+            <h3>Top user base on rating</h3>
+        </div>
+        <div id="chart" style="height: 300px;"></div>
+
         <div class="container">
             <div class="card">
                 <div class="card-header">
@@ -72,4 +78,15 @@
             {!! $feedbacks->links() !!}
         </div>
     </div>
+
+    <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+    <!-- Chartisan -->
+    <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
+
+    <script>
+        const chart = new Chartisan({
+            el: '#chart',
+            url: "@chart('top_post')",
+        });
+    </script>
 @endsection

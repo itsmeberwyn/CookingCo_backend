@@ -48,18 +48,19 @@
                                     </td>
                                     <td class='text-wrap'>
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-success" id='checkuser'
+                                            <label class="btn btn-success" id='checkuser' data-toggle="tooltip"
+                                                data-placement="top" title="Check user"
                                                 onClick="lookup_user({{ $reported->user_id }})">
                                                 <i class="bi bi-eye"></i>
                                             </label>
-                                            <label
+                                            <label data-toggle="tooltip" data-placement="top" title="Warn user"
                                                 class="btn btn-warning <?php if ($reported->isSeen){ ?>
                                                 disable_link <?php   } ?>"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-{{ $reported->user_id }}">
                                                 <i class="bi bi-exclamation-circle"></i>
                                             </label>
-                                            <label
+                                            <label data-toggle="tooltip" data-placement="top" title="Ban user"
                                                 class="btn btn-danger  <?php if ($reported->isBan){ ?>
                                                 disable_link <?php   } ?>"
                                                 data-bs-toggle="modal"
@@ -208,6 +209,11 @@
 
 
     <script>
+        $(document).ready(function() {
+            $("body").tooltip({
+                selector: '[data-toggle=tooltip]'
+            });
+        });
         $(window).on('load', function() {
             $('#succes-modal').modal('show');
         });

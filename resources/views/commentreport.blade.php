@@ -46,28 +46,71 @@
                                     </td>
                                     <td class='text-wrap'>
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-success" id='checkuser'
+                                            <label class="btn btn-success" id='checkuser' data-toggle="tooltip"
+                                                data-placement="top" title="Check comment"
                                                 onClick="lookup_user({{ $reported->post_id }}, '{{ $reported->message }}')">
                                                 <i class="bi bi-eye"></i>
                                             </label>
-                                            <label
+                                            <label data-toggle="tooltip" data-placement="top" title="Warn user"
                                                 class="btn btn-warning <?php if ($reported->isSeen){ ?>
                                                 disable_link <?php   } ?>"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-{{ $reported->user_id }}">
                                                 <i class="bi bi-exclamation-circle"></i>
                                             </label>
-                                            <label
+                                            <label data-toggle="tooltip" data-placement="top" title="Ban user"
                                                 class="btn btn-danger  <?php if ($reported->isBan){ ?>
                                                 disable_link <?php   } ?>"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-ban-{{ $reported->user_id }}">
                                                 <i class="bi bi-x-octagon"></i>
                                             </label>
+                                            <label data-toggle="tooltip" data-placement="top"
+                                                title="{{ $reported->isTrash ? 'Restore comment' : 'Hide comment' }}"
+                                                class="btn {{ $reported->isTrash ? 'btn-primary' : 'btn-secondary' }}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-hide-{{ $reported->user_id }}">
+                                                @if ($reported->isTrash)
+                                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                                @else
+                                                    <i class="bi bi-file-earmark-arrow-down"></i>
+                                                @endif
+                                            </label>
                                         </div>
                                     </td>
 
                                 </tr>
+
+                                {{-- hide comment --}}
+                                <div class="modal fade" id="exampleModal-hide-{{ $reported->user_id }}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @if ($reported->isTrash)
+                                                    <p>You are about to unhide comment of {{ $reported->firstname }}
+                                                        {{ $reported->lastname }}. Are you sure you want to continue?</p>
+                                                @else
+                                                    <p>You are about to hide comment of {{ $reported->firstname }}
+                                                        {{ $reported->lastname }}. Are you sure you want to continue?</p>
+                                                @endif
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    onClick="hide_comment({{ $reported->comment_id }})">Yes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- warning for user --}}
                                 <div class="modal fade" id="exampleModal-{{ $reported->user_id }}" tabindex="-1"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -200,6 +243,11 @@
     </div>
 
     <script>
+        $(document).ready(function() {
+            $("body").tooltip({
+                selector: '[data-toggle=tooltip]'
+            });
+        });
         $(window).on('load', function() {
             $('#succes-modal').modal('show');
         });
@@ -217,6 +265,10 @@
 
         function warn_user(user_id) {
             window.location.href = '/warn-user?id=' + user_id;
+        }
+
+        function hide_comment(comment_id) {
+            window.location.href = '/hide-comment?id=' + comment_id;
         }
 
         function ban_user(modalid) {

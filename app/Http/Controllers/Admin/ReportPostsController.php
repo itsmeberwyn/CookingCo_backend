@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ban_user;
+use App\Models\HiddenContent;
 use App\Models\Post;
 use App\Models\Reported_post;
 use App\Models\Reported_user;
@@ -20,6 +21,13 @@ class ReportPostsController extends Controller
         foreach ($reported_posts as $user) {
             $datawarn = Warn_user::where('user_id', $user->user_id)->first();
             $databan = Ban_user::where('user_id', $user->user_id)->first();
+            $isPost = Post::withTrashed()->where('id', $user->post_id)->first();
+
+            if ($isPost->trashed()) {
+                $user['isTrash'] = true;
+            } else {
+                $user['isTrash'] = false;
+            }
 
             if ($datawarn != null) {
                 if ($datawarn->deleted_at == null) {
@@ -41,7 +49,7 @@ class ReportPostsController extends Controller
                 $user['isBan'] = false;
             }
         }
-
+        // dd($reported_posts);
         return view('postreport', compact('reported_posts'));
     }
 
@@ -77,6 +85,30 @@ class ReportPostsController extends Controller
 
             if ($post[0]->save()) {
                 return ['status' => 'success', 'message' => 'Report sent successfully'];
+            } else {
+                return ['status' => 'Failed', 'message' => 'Something went wrong'];
+            }
+        }
+    }
+
+    public function hide(Request $request)
+    {
+        $isComment = Post::withTrashed()->where('id', $request->get('id'))->first();
+
+        if ($isComment->trashed()) {
+            HiddenContent::where('content_id', $request->get('id'))->where('type', 'post')->delete();
+            Post::withTrashed()->where('id', $request->get('id'))->restore();
+
+            return redirect()->back()->with('success', 'Post restore successfully');
+        } else {
+            Post::where('id', $request->get('id'))->delete();
+            $hiddenContent = new HiddenContent;
+
+            $hiddenContent->content_id = $request->get('id');
+            $hiddenContent->type = 'post';
+
+            if ($hiddenContent->save()) {
+                return redirect()->back()->with('success', 'Post hide successfully');
             } else {
                 return ['status' => 'Failed', 'message' => 'Something went wrong'];
             }

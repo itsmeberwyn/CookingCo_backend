@@ -30,9 +30,15 @@ Route::get('/', function () {
 
 Route::get('/user/{user_id}', [UserController::class, 'index'])->name('user');
 Route::get('/post/{post_id}', [PostController::class, 'index'])->name('post');
+
 Route::get('/report-users', [ReportUsersController::class, 'index'])->name('reportuser');
+
 Route::get('/report-posts', [ReportPostsController::class, 'index'])->name('reportpost');
+Route::get('/hide-post', [ReportPostsController::class, 'hide'])->name('hidepost');
+
 Route::get('/report-comments', [ReportCommentsController::class, 'index'])->name('reportcomment');
+Route::get('/hide-comment', [ReportCommentsController::class, 'hide'])->name('hidecomment');
+
 Route::get('/warn-user', [WarnUserController::class, 'create'])->name('warn');
 Route::post('/ban-user', [BanUserController::class, 'create'])->name('ban');
 
